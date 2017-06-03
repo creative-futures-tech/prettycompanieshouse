@@ -1,5 +1,106 @@
+{% extends 'prettycompanieshouse/base.html' %}
+
 {% load static %}
 
-<link rel="stylesheet" type="text/css" href="{% static '{{project_name_app}}/style.css' %}" />
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{% static 'prettycompanieshouse/css/bootstrap.min.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'prettycompanieshouse_app/css/selectize.bootstrap3.css' %}" />
+{% endblock %}
 
-<h1>Hello this is a project being rendedred with raw html for app {{ project_name_app }} </h1>
+
+{% block content %}
+<div class="body-content">
+    <header class="header">
+    <h1>
+        Pretty Companies House
+    </h1>
+    </header>
+
+    <section class="section container-fluid">
+
+<select id="select-company" class="movies selectized">
+    <option value="" selected="selected" name=""></option>
+</select>
+
+    </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'prettycompanieshouse/js/jquery.min.js' %}"></script>
+<script src="{% static 'prettycompanieshouse/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'prettycompanieshouse/js/selectize.js' %}"></script>
+
+
+<script>
+$( document ).ready(function() {
+
+var chosenCompany = null;
+
+$('#select-company').selectize({
+    valueField: 'title',
+    labelField: 'title',
+    searchField: 'title',
+    options: [],
+    create: false,
+    render: {
+        option: function(item, escape) {
+
+            return '<div>' +
+                '<span class="title">' +
+                    '<span class="name">' + escape(item.title) + '</span>' +
+                '</span>' +
+                '<p class="small">' + escape(item.address) + '</p>' +
+
+            '</div>';
+        },
+        item: function(item, escape){
+         chosenCompany = item;
+         return '<form>' +
+                '<span class="title">' +
+                    '<span class="name">' + escape(item.title) + '</span>' +
+                '</span>' +
+                '<span class="number" hidden>' + escape(item.number) + '</span>' +
+                '<span class="address" hidden>' + escape(item.address) + '</span>' +
+            '</form>';
+        }
+    },
+    load: function(query, callback) {
+        if (!query.length) return callback();
+        $.ajax({
+            url: "{% url 'companies_house_info' %}",
+            type: 'POST',
+            dataType: 'json',
+            data: {
+           search: query,
+           csrfmiddlewaretoken: "{{ csrf_token }}"
+           },
+            error: function(err) {
+            console.log(err);
+                callback();
+            },
+            success: function(res) {
+                callback(res["companies"]);
+            }
+        });
+    },
+
+    onItemAdd: function(value, $item){
+        var company_name = $($item.find("span.name")[0]).text();
+        $("#id_company_name").val(company_name);
+        $("#company-name").text(company_name);
+
+        var company_address = $($item.find("span.address")[0]).text();
+        $("#id_company_address").val(company_address);
+        $("#company-address").text(company_address);
+        $("#confirm-create-company").modal('show');
+
+    },
+});
+
+
+});
+</script>
+
+
+{% endblock %}
