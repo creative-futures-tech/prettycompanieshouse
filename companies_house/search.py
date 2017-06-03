@@ -1,5 +1,5 @@
 
-from config import COMPANIES_HOUSE_API_KEY
+from .config import COMPANIES_HOUSE_API_KEY
 import requests
 from config import _url
 
