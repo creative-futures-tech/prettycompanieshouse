@@ -1,7 +1,6 @@
 
-from .config import COMPANIES_HOUSE_API_KEY
+from .config import COMPANIES_HOUSE_API_KEY, _url
 import requests
-from config import _url
 
 def search_by_name(name, items_per_page = 5):
     """
