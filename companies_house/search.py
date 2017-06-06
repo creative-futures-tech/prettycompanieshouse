@@ -1,9 +1,9 @@
-
-from config import COMPANIES_HOUSE_API_KEY
+from companies_house.config import COMPANIES_HOUSE_API_KEY
 import requests
-from config import _url
+from companies_house.config import _url
 
-def search_by_name(name, items_per_page = 5):
+
+def search_by_name(name, items_per_page=5):
     """
 
     :param name: company name to search
@@ -14,11 +14,8 @@ def search_by_name(name, items_per_page = 5):
     body = res.json()
     return [{'title': company['title'],
              'number': company['company_number'],
-             'address': company['address_snippet']} for company in  body['items']]
-
+             'address': company['address_snippet']} for company in body['items']]
 
 
 def search_by_number(company_number):
     pass
-
-
