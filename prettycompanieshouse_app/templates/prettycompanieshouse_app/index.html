@@ -9,9 +9,11 @@
 
 
 {% block content %}
+
     <div class="body-content">
         <div class="container">
-            <div class="row">
+
+            <section class="row">
                 <div class="col-lg-12">
                     <header class="header">
                         <h1>
@@ -19,31 +21,71 @@
                         </h1>
                     </header>
                 </div>
+            </section>
+
+
+            <section class="row">
 
                 <div class="col-lg-12">
                     <select id="select-company" class="movies selectized">
                         <option value="" selected="selected" name=""></option>
                     </select>
                 </div>
+            </section>
 
-                <div class="col-lg-12">
-                    <br>
-                    <div id="company-data"></div>
-                </div>
+
+            <section>
+                <h3 class="col-xs-12" id='company-name'>[[ company_name ]]</h3>
+
+                 <div id="company-info">
+                     <company-info
+                          v-for="item in companyInfo"
+                          v-bind:info="item"
+                          v-bind:key="item.key">
+                        </company-info>
+                 </div>
+
+            </section>
+
+
             </div>
         </div>
 
-    </div>
 {% endblock %}
 
 {% block scripts %}
     <script src="{% static 'prettycompanieshouse/js/jquery.min.js' %}"></script>
     <script src="{% static 'prettycompanieshouse/js/bootstrap.min.js' %}"></script>
     <script src="{% static 'prettycompanieshouse/js/selectize.js' %}"></script>
+    <script src="{% static 'prettycompanieshouse/js/vue.min.js' %}"></script>
 
 
     <script>
         $(document).ready(function () {
+
+        Vue.component('company-info', {
+                    props: ['info'],
+                    template: " <div class='row'><div class='col-sm-4'> [[info.key]] </div> <div class='col-sm-8'>[[info.value]]</div></div>",
+                    delimiters: ['[[',']]']
+})
+
+
+
+        var selectedCompanyVue = new Vue({
+          el: '#company-info',
+          data: {
+            companyInfo: []
+          }
+        });
+
+        var selectedCompanyTitle = new Vue({
+          el: '#company-name',
+          data: {
+            company_name: ''
+          },
+          delimiters: ['[[',']]']
+        });
+
 
             var chosenCompany = null;
 
@@ -64,19 +106,19 @@
 
                             '</div>';
                     },
-                    item: function (item, escape) {
-                        chosenCompany = item;
+                    item: function (company, escape) {
 
-                        $("#company-data").html("<span>" + item.title + "</span><br>" +
-                            "<span>" + item.number + "</span><br>" +
-                            "<span>" + item.address + "</span>");
+                        var selectedInfoArray = [];
+
+                         for (key in company) {
+                                    selectedInfoArray.push( {'key': key, 'value': company[key] } );
+                               }
+
+                        selectedCompanyTitle.company_name = escape(company.title);
+                        selectedCompanyVue.companyInfo =  selectedInfoArray;
 
                         return '<form>' +
-                            '<span class="title">' +
-                            '<span class="name">' + escape(item.title) + '</span>' +
-                            '</span>' +
-                            '<span class="number" hidden>' + escape(item.number) + '</span>' +
-                            '<span class="address" hidden>' + escape(item.address) + '</span>' +
+                            '<span class="name">' + escape(company.title) + '</span>' +
                             '</form>';
                     }
                 },
@@ -98,19 +140,7 @@
                             callback(res["companies"]);
                         }
                     });
-                },
-
-                onItemAdd: function (value, $item) {
-                    var company_name = $($item.find("span.name")[0]).text();
-                    $("#id_company_name").val(company_name);
-                    $("#company-name").text(company_name);
-
-                    var company_address = $($item.find("span.address")[0]).text();
-                    $("#id_company_address").val(company_address);
-                    $("#company-address").text(company_address);
-                    $("#confirm-create-company").modal('show');
-
-                },
+                }
             });
 
 

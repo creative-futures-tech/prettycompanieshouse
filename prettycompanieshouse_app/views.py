@@ -10,4 +10,9 @@ def index(request):
 def get_companies_house_info(request):
     tmp_company_name =  request.POST.get('search')
     companies_found = search.search_by_name(tmp_company_name)
+    request.session['companies'] = companies_found
     return JsonResponse({'companies': companies_found})
+
+
+def print_info_from_company(request, company_nr):
+    pass
