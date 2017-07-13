@@ -3,104 +3,148 @@
 {% load static %}
 
 {% block head %}
-<link rel="stylesheet" type="text/css" href="{% static 'prettycompanieshouse/css/bootstrap.min.css' %}" />
-<link rel="stylesheet" type="text/css" href="{% static 'prettycompanieshouse_app/css/selectize.bootstrap3.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'prettycompanieshouse/css/bootstrap.min.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'prettycompanieshouse_app/css/selectize.bootstrap3.css' %}"/>
 {% endblock %}
 
 
 {% block content %}
-<div class="body-content">
-    <header class="header">
-    <h1>
-        Pretty Companies House
-    </h1>
-    </header>
 
-    <section class="section container-fluid">
+    <div class="body-content">
+        <div class="container">
 
-<select id="select-company" class="movies selectized">
-    <option value="" selected="selected" name=""></option>
-</select>
+            <section class="row">
+                <div class="col-lg-12">
+                    <header class="header">
+                        <h1>
+                            Pretty Companies House
+                        </h1>
+                    </header>
+                </div>
+            </section>
 
-    </section>
-</div>
+
+            <section class="row">
+
+                <div class="col-lg-12">
+                    <select id="select-company" class="movies selectized">
+                        <option value="" selected="selected" name=""></option>
+                    </select>
+                </div>
+            </section>
+
+
+            <section>
+                <h3 class="col-xs-12" id='company-name'>[[ company_name ]]</h3>
+
+                 <div id="company-info">
+                     <company-info
+                          v-for="item in companyInfo"
+                          v-bind:info="item"
+                          v-bind:key="item.key">
+                        </company-info>
+                 </div>
+
+            </section>
+
+            </div>
+        </div>
+
 {% endblock %}
 
 {% block scripts %}
-<script src="{% static 'prettycompanieshouse/js/jquery.min.js' %}"></script>
-<script src="{% static 'prettycompanieshouse/js/bootstrap.min.js' %}"></script>
-<script src="{% static 'prettycompanieshouse/js/selectize.js' %}"></script>
+    <script src="{% static 'prettycompanieshouse/js/jquery.min.js' %}"></script>
+    <script src="{% static 'prettycompanieshouse/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'prettycompanieshouse/js/selectize.js' %}"></script>
+    <script src="{% static 'prettycompanieshouse/js/vue.min.js' %}"></script>
 
 
-<script>
-$( document ).ready(function() {
+    <script>
+        $(document).ready(function () {
 
-var chosenCompany = null;
+        Vue.component('company-info', {
+                    props: ['info'],
+                    template: " <div class='row'><div class='col-sm-4'> [[info.key]] </div> <div class='col-sm-8'>[[info.value]]</div></div>",
+                    delimiters: ['[[',']]']
+})
 
-$('#select-company').selectize({
-    valueField: 'title',
-    labelField: 'title',
-    searchField: 'title',
-    options: [],
-    create: false,
-    render: {
-        option: function(item, escape) {
 
-            return '<div>' +
-                '<span class="title">' +
-                    '<span class="name">' + escape(item.title) + '</span>' +
-                '</span>' +
-                '<p class="small">' + escape(item.address) + '</p>' +
 
-            '</div>';
-        },
-        item: function(item, escape){
-         chosenCompany = item;
-         return '<form>' +
-                '<span class="title">' +
-                    '<span class="name">' + escape(item.title) + '</span>' +
-                '</span>' +
-                '<span class="number" hidden>' + escape(item.number) + '</span>' +
-                '<span class="address" hidden>' + escape(item.address) + '</span>' +
-            '</form>';
-        }
-    },
-    load: function(query, callback) {
-        if (!query.length) return callback();
-        $.ajax({
-            url: "{% url 'companies_house_info' %}",
-            type: 'POST',
-            dataType: 'json',
-            data: {
-           search: query,
-           csrfmiddlewaretoken: "{{ csrf_token }}"
-           },
-            error: function(err) {
-            console.log(err);
-                callback();
-            },
-            success: function(res) {
-                callback(res["companies"]);
-            }
+        var selectedCompanyVue = new Vue({
+          el: '#company-info',
+          data: {
+            companyInfo: []
+          }
         });
-    },
 
-    onItemAdd: function(value, $item){
-        var company_name = $($item.find("span.name")[0]).text();
-        $("#id_company_name").val(company_name);
-        $("#company-name").text(company_name);
-
-        var company_address = $($item.find("span.address")[0]).text();
-        $("#id_company_address").val(company_address);
-        $("#company-address").text(company_address);
-        $("#confirm-create-company").modal('show');
-
-    },
-});
+        var selectedCompanyTitle = new Vue({
+          el: '#company-name',
+          data: {
+            company_name: ''
+          },
+          delimiters: ['[[',']]']
+        });
 
 
-});
-</script>
+            var chosenCompany = null;
+
+            $('#select-company').selectize({
+                valueField: 'title',
+                labelField: 'title',
+                searchField: 'title',
+                options: [],
+                create: false,
+                render: {
+                    option: function (item, escape) {
+
+                        return '<div>' +
+                            '<span class="title">' +
+                            '<span class="name">' + escape(item.title) + '</span>' +
+                            '</span>' +
+                            '<p class="small">' + escape(item.address) + '</p>' +
+
+                            '</div>';
+                    },
+                    item: function (company, escape) {
+
+                        var selectedInfoArray = [];
+
+                         for (key in company) {
+                                    selectedInfoArray.push( {'key': key, 'value': company[key] } );
+                               }
+
+                        selectedCompanyTitle.company_name = escape(company.title);
+                        selectedCompanyVue.companyInfo =  selectedInfoArray;
+
+                        return '<form>' +
+                            '<span class="name">' + escape(company.title) + '</span>' +
+                            '</form>';
+                    }
+                },
+                load: function (query, callback) {
+                    if (!query.length) return callback();
+                    $.ajax({
+                        url: "{% url 'companies_house_info' %}",
+                        type: 'POST',
+                        dataType: 'json',
+                        data: {
+                            search: query,
+                            csrfmiddlewaretoken: "{{ csrf_token }}"
+                        },
+                        error: function (err) {
+                            console.log(err);
+                            callback();
+                        },
+                        success: function (res) {
+                            callback(res["companies"]);
+                        }
+                    });
+                }
+            });
+
+
+        });
+    </script>
 
 
 {% endblock %}
