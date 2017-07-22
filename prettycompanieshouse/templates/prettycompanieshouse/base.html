@@ -1,15 +1,52 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+     <link rel="stylesheet" type="text/css" href="{% static 'prettycompanieshouse/css/bootstrap.min.css' %}"/>
+     <link rel="stylesheet" type="text/css" href="{% static 'prettycompanieshouse/css/font-awesome.min.css' %}"/>
+     <link rel="stylesheet" type="text/css" href="{% static 'prettycompanieshouse/css/style.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'prettycompanieshouse_app/css/selectize.bootstrap3.css' %}"/>
     {% block head %}{% endblock %}
 </head>
 <body>
+<header>
+    <nav class="navbar navbar-default">
+
+        <a href="/" class="navbar-brand">pretty companies house</a>
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"
+                    aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+        <nav class="collapse navbar-collapse" id="navbar-collapse">
+            <ul class="nav navbar-nav navbar-right">
+
+                <li><a href="/about">About</a></li>
+                <li><a href="/login">Contact</a></li>
+            </ul>
+
+
+        </nav>
+    </nav>
+</header>
+
 
 {% block content %}{% endblock %}
 
 {% block scripts %}{% endblock %}
+
+<footer class="footer">
+    <div class="footer-content">©2017 Creative Futures Technologies Ltd</div>
+</footer>
+
 </body>
 </html>

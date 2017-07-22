@@ -1,0 +1,115 @@
+/*HEADER*/
+
+header.header {
+    padding-top: 30px;
+    text-align: center;
+}
+
+section.panel{
+margin-top: 35px;
+
+}
+
+.panel-body {
+
+padding-bottom:0px;
+}
+
+.panel-title{
+display:inline;
+}
+
+
+.panel-heading a {
+float:right;
+}
+
+a {
+color: #00bcd4;
+
+}
+
+
+#company-info .row {
+border-bottom: 1px solid #d3d3d3;
+    padding-bottom: 2px;
+
+}
+
+/* Nav bar */
+.navbar {
+  margin: 0 auto;
+  border: 0;
+  height: 100px;
+ /* max-width: 980px; */
+  padding: 25px 15%;
+  background-color: #ffca28;
+  border-bottom: 1px solid #c79a00;
+  color: white;
+}
+.navbar-header {
+  height: 75px;
+}
+.navbar-nav {
+  margin: 0;
+  background-color: white;
+}
+.navbar-brand {
+  text-transform: uppercase;
+  color: white;
+}
+
+.navbar-default .navbar-brand {
+    color: white;
+}
+
+.navbar-default .navbar-nav>li>a {
+    color: white;
+    background-color: #ffca28;
+}
+
+.navbar-default .navbar-nav>li>a:focus, .navbar-default .navbar-nav>li>a:hover {
+    color: white;
+    background-color: #c79a00;
+}
+
+.navbar-default .navbar-brand:focus, .navbar-default .navbar-brand:hover {
+    color: #c79a00;
+    background-color: transparent;
+}
+
+
+/* footer */
+.footer {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flexbox;
+  display: flex;
+
+  -webkit-align-items: center;
+  -moz-align-items: center;
+  align-items: center;
+
+  height: 45px;
+  background-color: #ffca28;
+  border-top: 1px solid #c79a00;
+  font-size: 12px;
+  font-weight: 300;
+  color:white;
+}
+
+.footer.fixed {
+position:fixed;
+}
+
+.footer-content {
+  margin: 0 auto;
+  max-width: 980px;
+  width: 100%;
+  padding: 0 15px;
+}
